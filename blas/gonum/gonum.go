@@ -109,6 +109,28 @@ func checkZMatrix(name byte, m, n int, a []complex128, lda int) {
 	}
 }
 
+func checkZBandMatrix(name byte, m, n, kL, kU int, a []complex128, lda int) {
+	if m < 0 {
+		panic(mLT0)
+	}
+	if n < 0 {
+		panic(nLT0)
+	}
+	if kL < 0 {
+		panic(kLLT0)
+	}
+	if kU < 0 {
+		panic(kULT0)
+	}
+	if lda < kL+kU+1 {
+		panic("blas: illegal stride of band matrix " + string(name))
+	}
+	nRow := min(m, n+kL)
+	if len(a) < (nRow-1)*lda+max(1, n+kL-nRow+1) {
+		panic("blas: insufficient " + string(name) + " band matrix slice length")
+	}
+}
+
 func checkZVector(name byte, n int, x []complex128, incX int) {
 	if n < 0 {
 		panic(nLT0)
